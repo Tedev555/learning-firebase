@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+    <title>Firebase Uplaod File</title>
+</head>
+<body>
+    <progress value="0" max="100" id="uploader">0%</progress>
+    <input type="file" value="upload" id="fileButton" />
+
+    <script>
+            const config = {
+                // your server config
+                apiKey: "AIzaSyBBPuKqNsIfvJ58v8gRnfY1r3Q3D082khI",
+                authDomain: "photoprint-70a43.firebaseapp.com",
+                databaseURL: "https://photoprint-70a43.firebaseio.com",
+                projectId: "photoprint-70a43",
+                storageBucket: "photoprint-70a43.appspot.com",
+                messagingSenderId: "670128733351"
+            }
+    
+            firebase.initializeApp(config)
+    
+            //Get elements 
+            var uploader = document.getElementById('uploader')
+            var fileButton = document.getElementById('fileButton')
+    
+            //Listen for file selection 
+            fileButton.addEventListener('change', function(e) {
+                //Get file
+                var file = e.target.files[0];
+                
+                //Create a storage of 
+                var storageRef =  firebase.storage().ref('test_imgs/' + file.name)
+
+                console.log(storageRef)
+                
+                //Upload file 
+                var task = storageRef.put(file)
+    
+                //Update progress bar 
+                task.on('state_changed', function progress(snapshot) {
+                    var percentage = (snapshot.bytesTransferred / 
+                    snapshot.totalBytes) * 100
+    
+                    uploader.value = percentage
+    
+                }, function error(err) {
+                    console.log('Upload Error', err);
+                    
+                }, function complete() {
+
+                })    
+            })
+    
+        </script>
+
+</body>
+</html>
